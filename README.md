@@ -44,4 +44,4 @@ python3 -m unittest discover -s tests -v
 
 `KIA-2026-002` a construit et validé le centre de commandement de eCDF, AGRICHAIN DAO et Open Technologies Portfolio. Consultez `dashboard/COMMAND-CENTER.md`.
 
-`KIA-2026-003` cadre le premier problème eCDF : la preuve et la traçabilité des paiements agricoles en RDC, en mode prototype sans fonds réels.
+`KIA-2026-003` a validé le premier problème eCDF : la preuve et la traçabilité des paiements agricoles en RDC, en mode prototype sans fonds réels.
