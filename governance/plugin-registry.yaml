@@ -1,0 +1,28 @@
+version: "1.0"
+status_values: [candidate, approved, suspended, retired]
+plugins:
+  - id: github
+    status: approved
+    purpose: source_control_and_evidence
+    data: [repositories, issues, pull_requests, actions]
+    max_permission: P3
+    owner: Emeraude-Kiangana
+  - id: runway
+    status: candidate
+    purpose: portfolio_video_generation
+    data: [prompts, approved_media_assets]
+    max_permission: P2
+    owner: Emeraude-Kiangana
+  - id: canva
+    status: candidate
+    purpose: visual_asset_design
+    data: [brand_assets, approved_content]
+    max_permission: P2
+    owner: Emeraude-Kiangana
+  - id: google-drive
+    status: candidate
+    purpose: controlled_document_exchange
+    data: [approved_project_documents]
+    max_permission: P3
+    owner: Emeraude-Kiangana
+
