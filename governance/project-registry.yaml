@@ -1,0 +1,36 @@
+version: "1.0"
+portfolio_owner: Emeraude-Kiangana
+review_cadence: weekly
+projects:
+  - id: ecdf
+    name: eCDF
+    status: research_prototype
+    gate: "-1"
+    objective: "Produire un whitepaper et une architecture crédibles pour un cas d’usage congolais candidat au Stellar Community Fund."
+    repository: "https://github.com/Emeraude-Kiangana/ecdf"
+    constraints:
+      - aucune prétention de CBDC officielle ou d’infrastructure BCC
+      - Stellar reste un candidat technique interchangeable
+      - données KYC, secrets et logique complexe restent hors chaîne
+    next_decision: "Choisir le premier problème congolais précisément mesurable."
+  - id: agrichain-dao
+    name: AGRICHAIN DAO
+    status: concept
+    gate: "0"
+    objective: "Concevoir une infrastructure agroécologique traçable combinant données satellitaires, preuves terrain et actifs RWA."
+    repository: null
+    constraints:
+      - aucune tokenisation avant preuve de valeur réelle
+      - conformité foncière, financière et environnementale à étudier
+    next_decision: "Définir un pilote agricole local et son unité de preuve."
+  - id: open-technologies-portfolio
+    name: Emeraude Kiangana Open Technologies Portfolio
+    status: design
+    gate: "0"
+    objective: "Publier une infrastructure de preuves démontrant les compétences, projets et résultats."
+    repository: null
+    constraints:
+      - chaque affirmation doit pointer vers une preuve vérifiable
+      - aucune donnée personnelle sensible ne doit être publiée
+    next_decision: "Choisir l’architecture GitHub Pages et le premier projet présenté."
+
