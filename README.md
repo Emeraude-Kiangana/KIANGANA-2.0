@@ -42,4 +42,4 @@ python3 -m unittest discover -s tests -v
 
 `KIA-2026-001` publiera ce dépôt sur GitHub et vérifiera le premier workflow en ligne. Son contrat et son état sont disponibles dans `missions/` et `reports/`.
 
-`KIA-2026-002` construit le centre de commandement de eCDF, AGRICHAIN DAO et Open Technologies Portfolio. Consultez `dashboard/COMMAND-CENTER.md`.
+`KIA-2026-002` a construit et validé le centre de commandement de eCDF, AGRICHAIN DAO et Open Technologies Portfolio. Consultez `dashboard/COMMAND-CENTER.md`.
