@@ -1,0 +1,30 @@
+version: "1.0"
+levels:
+  P0:
+    name: observation
+    allowed: [read_public_information, summarize, explain]
+    human_approval: false
+  P1:
+    name: proposition
+    allowed: [draft, plan, recommend, simulate]
+    human_approval: false
+  P2:
+    name: workspace_write
+    allowed: [create_local_file, edit_branch, run_tests]
+    human_approval: false
+  P3:
+    name: controlled_external_write
+    allowed: [open_pull_request, create_issue, update_project_board]
+    human_approval: true
+  P4:
+    name: sensitive_action
+    allowed: [publish, send_message, deploy, change_permissions]
+    human_approval: true
+    dual_check: true
+  P5:
+    name: critical_action
+    allowed: [financial_transaction, blockchain_transaction, destructive_delete, production_secret_change]
+    human_approval: true
+    explicit_per_action: true
+    dual_check: true
+
