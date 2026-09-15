@@ -1,0 +1,11 @@
+evidence_id: EVD-2026-003
+mission_id: KIA-2026-003
+claim: "Le problème des paiements agricoles en espèces en RDC constitue un premier cas eCDF documenté et borné."
+artifact: "research/ecdf/problem-selection.md; governance/decisions/ADR-0004-ecdf-agricultural-payments.md"
+method: "Analyse de sources institutionnelles, matrice de sélection et validation automatisée"
+result: pending
+hash_sha256: pending
+created_at: "2026-09-15"
+created_by: KIANGANA-2.0
+verdict: pending
+
