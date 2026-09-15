@@ -18,6 +18,9 @@ REQUIRED = [
     "dashboard/COMMAND-CENTER.md", "missions/KIA-2026-002.yaml",
     "evidence/EVD-2026-002.yaml",
     "reports/KIA-2026-002-closure.md",
+    "research/ecdf/problem-selection.md",
+    "governance/decisions/ADR-0004-ecdf-agricultural-payments.md",
+    "missions/KIA-2026-003.yaml", "evidence/EVD-2026-003.yaml",
 ]
 
 def validate():
@@ -40,6 +43,12 @@ def validate():
         for project in ("eCDF", "AGRICHAIN DAO", "Open Technologies Portfolio"):
             if project not in registry:
                 errors.append(f"missing project in registry: {project}")
+    problem_path = ROOT / "research/ecdf/problem-selection.md"
+    if problem_path.is_file():
+        problem = problem_path.read_text(encoding="utf-8")
+        for boundary in ("n’est pas une monnaie", "SettlementSimulator", "Transactions mainnet", "Données personnelles écrites on-chain"):
+            if boundary not in problem:
+                errors.append(f"missing eCDF boundary: {boundary}")
     forbidden = ["PRIVATE KEY", "BEGIN OPENSSH PRIVATE KEY", "ghp_", "sk-"]
     for path in ROOT.rglob("*"):
         if path.resolve() == Path(__file__).resolve():

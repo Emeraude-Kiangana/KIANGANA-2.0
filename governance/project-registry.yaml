@@ -12,7 +12,7 @@ projects:
       - aucune prétention de CBDC officielle ou d’infrastructure BCC
       - Stellar reste un candidat technique interchangeable
       - données KYC, secrets et logique complexe restent hors chaîne
-    next_decision: "Choisir le premier problème congolais précisément mesurable."
+    next_decision: "Valider sur le terrain le besoin de preuve des paiements agricoles et construire le simulateur V0."
   - id: agrichain-dao
     name: AGRICHAIN DAO
     status: concept
@@ -33,4 +33,3 @@ projects:
       - chaque affirmation doit pointer vers une preuve vérifiable
       - aucune donnée personnelle sensible ne doit être publiée
     next_decision: "Choisir l’architecture GitHub Pages et le premier projet présenté."
-
