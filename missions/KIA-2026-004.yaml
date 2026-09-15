@@ -1,0 +1,41 @@
+mission_id: KIA-2026-004
+title: "Valider sur le terrain le besoin eCDF de preuve des paiements agricoles"
+project: eCDF
+owner: Emeraude-Kiangana
+status: running
+permission_level: P3
+objective: "Produire des preuves terrain suffisantes pour décider Go, Pivot ou No-Go avant tout développement du simulateur eCDF V0."
+scope:
+  included:
+    - entretiens avec petits producteurs, responsables de coopérative et acheteurs
+    - cartographie du paiement actuel et de ses points de rupture
+    - consentement éclairé et minimisation des données
+    - sélection documentée d'un terrain pilote
+    - décision Go, Pivot ou No-Go
+  excluded:
+    - collecte de données personnelles sensibles
+    - publication du nom d'une organisation sans autorisation écrite
+    - transfert d'argent réel
+    - déploiement mainnet ou émission d'actif
+    - présentation d'eCDF comme CBDC ou projet de la BCC
+acceptance_criteria:
+  - au moins 5 producteurs, 1 responsable de coopérative et 1 acheteur interrogés
+  - chaque entretien possède un consentement enregistré et un identifiant pseudonyme
+  - le parcours de paiement actuel est décrit avec délais, coûts, litiges et preuves disponibles
+  - les besoins sont distingués des solutions proposées
+  - le terrain pilote atteint le seuil minimal de la grille de sélection
+  - une décision Go, Pivot ou No-Go est signée par validation humaine
+evidence_required:
+  - protocole de découverte terrain
+  - guide d'entretien
+  - formulaire de consentement
+  - grille de sélection du pilote
+  - matrice anonymisée des observations
+  - rapport de décision Go Pivot No-Go
+human_approval:
+  required: true
+  approver: Emeraude-Kiangana
+  recorded_signal: "Go — 2026-09-15"
+rollback_plan: "Fermer la mission sans construire le simulateur, supprimer les données identifiantes collectées et documenter les motifs du No-Go."
+confidentiality:
+  rule: "Tout terrain candidat reste non désigné publiquement jusqu'à autorisation écrite de l'organisation concernée."
