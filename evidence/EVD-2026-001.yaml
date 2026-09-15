@@ -3,8 +3,10 @@ mission_id: KIA-2026-001
 claim: "Le starter pack local satisfait Gate Zero avant publication."
 artifact: "scripts/validate_gate_zero.py et tests/test_gate_zero.py"
 method: "Exécution locale du validateur et de unittest"
-result: "18 artefacts validés; niveaux P0-P5 présents; 3 tests sur 3 réussis. Dépôt GitHub trouvé et autorisation d’écriture confirmée après installation du connecteur."
-hash_sha256: "À calculer sur le commit GitHub initial"
+result: "20 fichiers publiés; 18 artefacts Gate Zero validés; niveaux P0-P5 présents; 3 tests sur 3 réussis; GitHub Actions réussi."
+hash_sha256: "git:2b08d69f5f9020ca1534cc3671a3be865bdea7ed"
 created_at: "2026-09-15"
 created_by: KIANGANA-2.0
 verdict: accepted
+repository_url: "https://github.com/Emeraude-Kiangana/KIANGANA-2.0"
+workflow_run_url: "https://github.com/Emeraude-Kiangana/KIANGANA-2.0/actions/runs/34962909578"
