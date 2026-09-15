@@ -2,7 +2,7 @@ mission_id: KIA-2026-002
 title: "Créer le centre de commandement multi-projets"
 project: KIANGANA-2.0
 owner: Emeraude-Kiangana
-status: running
+status: verification
 permission_level: P3
 objective: "Centraliser l’état, les décisions et les prochaines actions de eCDF, AGRICHAIN DAO et Open Technologies Portfolio."
 scope:
@@ -29,4 +29,3 @@ human_approval:
   approver: Emeraude-Kiangana
   recorded_signal: "GO — 2026-09-15"
 rollback_plan: "Fermer la pull request sans fusionner."
-
