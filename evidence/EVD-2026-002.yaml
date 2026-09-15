@@ -1,0 +1,11 @@
+evidence_id: EVD-2026-002
+mission_id: KIA-2026-002
+claim: "Le centre de commandement représente les trois projets prioritaires et passe les contrôles automatisés."
+artifact: "governance/project-registry.yaml; dashboard/COMMAND-CENTER.md; templates/project-status.yaml"
+method: "Validation locale, tests GitHub Actions et revue humaine de la pull request"
+result: "pending"
+hash_sha256: "pending"
+created_at: "2026-09-15"
+created_by: KIANGANA-2.0
+verdict: pending
+
