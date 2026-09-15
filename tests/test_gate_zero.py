@@ -23,5 +23,11 @@ class GateZeroTests(unittest.TestCase):
         for project in ("eCDF", "AGRICHAIN DAO", "Open Technologies Portfolio"):
             self.assertIn(project, registry)
 
+    def test_ecdf_problem_is_bounded(self):
+        problem = (ROOT / "research/ecdf/problem-selection.md").read_text(encoding="utf-8")
+        self.assertIn("paiements agricoles", problem)
+        self.assertIn("SettlementSimulator", problem)
+        self.assertIn("Transactions mainnet | 0", problem)
+
 if __name__ == "__main__":
     unittest.main()
