@@ -18,6 +18,10 @@ class GateZeroTests(unittest.TestCase):
         governance = (ROOT / "GOVERNANCE.md").read_text(encoding="utf-8")
         self.assertIn("autorité humaine finale", governance)
 
+    def test_command_center_tracks_priority_projects(self):
+        registry = (ROOT / "governance/project-registry.yaml").read_text(encoding="utf-8")
+        for project in ("eCDF", "AGRICHAIN DAO", "Open Technologies Portfolio"):
+            self.assertIn(project, registry)
+
 if __name__ == "__main__":
     unittest.main()
-

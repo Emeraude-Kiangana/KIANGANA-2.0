@@ -14,6 +14,9 @@ REQUIRED = [
     "schemas/mission-contract.schema.json", "docs/architecture.md",
     "missions/KIA-2026-001.yaml", "evidence/EVD-2026-001.yaml",
     "reports/KIA-2026-001-status.md",
+    "governance/project-registry.yaml", "templates/project-status.yaml",
+    "dashboard/COMMAND-CENTER.md", "missions/KIA-2026-002.yaml",
+    "evidence/EVD-2026-002.yaml",
 ]
 
 def validate():
@@ -30,6 +33,12 @@ def validate():
     for level in ("P0", "P1", "P2", "P3", "P4", "P5"):
         if f"  {level}:" not in matrix:
             errors.append(f"missing permission level: {level}")
+    registry_path = ROOT / "governance/project-registry.yaml"
+    if registry_path.is_file():
+        registry = registry_path.read_text(encoding="utf-8")
+        for project in ("eCDF", "AGRICHAIN DAO", "Open Technologies Portfolio"):
+            if project not in registry:
+                errors.append(f"missing project in registry: {project}")
     forbidden = ["PRIVATE KEY", "BEGIN OPENSSH PRIVATE KEY", "ghp_", "sk-"]
     for path in ROOT.rglob("*"):
         if path.resolve() == Path(__file__).resolve():
