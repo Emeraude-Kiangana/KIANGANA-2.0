@@ -21,6 +21,7 @@ REQUIRED = [
     "research/ecdf/problem-selection.md",
     "governance/decisions/ADR-0004-ecdf-agricultural-payments.md",
     "missions/KIA-2026-003.yaml", "evidence/EVD-2026-003.yaml",
+    "reports/KIA-2026-003-closure.md",
 ]
 
 def validate():
