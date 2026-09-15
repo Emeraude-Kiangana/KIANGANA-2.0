@@ -1,0 +1,4 @@
+participant_id,role,zone_general,product_type,payment_channel,delay_band,cost_band,proof_type,dispute_type,frequency_band,impact_0_2,evidence_level,consent_recorded,notes_anonymized
+P001,producer,,,,,,,,,,,yes,
+C001,cooperative_manager,,,,,,,,,,,yes,
+B001,buyer_or_payer,,,,,,,,,,,yes,
