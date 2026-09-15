@@ -2,7 +2,7 @@
 
 ## Verdict actuel
 
-`running`
+`accepted`
 
 ## Travail terminé
 
@@ -17,12 +17,23 @@
 
 Le connecteur officiel ChatGPT Codex a été installé sur le compte `Emeraude-Kiangana` et le dépôt `KIANGANA-2.0` lui a été accordé.
 
-## Action en cours
+## Résultat livré
 
-Publier les artefacts sur `main`, puis vérifier GitHub Actions.
+- 20 fichiers publiés sur `main`.
+- Commit vérifié : `2b08d69f5f9020ca1534cc3671a3be865bdea7ed`.
+- Workflow Gate Zero : `success`.
 
-## Preuves manquantes pour clôturer
+## Critères d’acceptation
 
-- URL du dépôt ;
-- SHA du commit initial ;
-- URL du workflow GitHub Actions réussi.
+| Critère | Résultat | Preuve |
+|---|---|---|
+| Dépôt sous Emeraude-Kiangana | Réussi | https://github.com/Emeraude-Kiangana/KIANGANA-2.0 |
+| Artefacts présents sur main | Réussi | Arborescence du dépôt |
+| GitHub Actions réussi | Réussi | https://github.com/Emeraude-Kiangana/KIANGANA-2.0/actions/runs/34962909578 |
+| Aucun secret détecté | Réussi | Validateur Gate Zero |
+
+## Validation humaine
+
+- Autorisation : `Go — 2026-09-15`
+- Validateur final : Emeraude Kiangana
+- Mission clôturée : 2026-09-15
