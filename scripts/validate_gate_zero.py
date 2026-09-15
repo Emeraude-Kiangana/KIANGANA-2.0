@@ -17,6 +17,7 @@ REQUIRED = [
     "governance/project-registry.yaml", "templates/project-status.yaml",
     "dashboard/COMMAND-CENTER.md", "missions/KIA-2026-002.yaml",
     "evidence/EVD-2026-002.yaml",
+    "reports/KIA-2026-002-closure.md",
 ]
 
 def validate():
