@@ -2,7 +2,7 @@ mission_id: KIA-2026-003
 title: "Sélectionner le premier problème congolais traité par eCDF"
 project: eCDF
 owner: Emeraude-Kiangana
-status: running
+status: verification
 permission_level: P3
 objective: "Choisir un problème local documenté, mesurable, prototypable et pertinent pour le Stellar Community Fund."
 selected_problem: "Preuve et traçabilité des paiements agricoles entre acheteurs ou coopératives et petits producteurs en RDC."
@@ -23,4 +23,3 @@ human_approval:
   approver: Emeraude-Kiangana
   recorded_signal: "Go — 2026-09-15"
 rollback_plan: "Fermer la pull request ou remplacer ADR-0004 par une nouvelle décision documentée."
-
