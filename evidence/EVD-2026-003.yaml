@@ -3,9 +3,9 @@ mission_id: KIA-2026-003
 claim: "Le problème des paiements agricoles en espèces en RDC constitue un premier cas eCDF documenté et borné."
 artifact: "research/ecdf/problem-selection.md; governance/decisions/ADR-0004-ecdf-agricultural-payments.md"
 method: "Analyse de sources institutionnelles, matrice de sélection et validation automatisée"
-result: pending
-hash_sha256: pending
+result: "28 artefacts validés; 5 tests sur 5 réussis; cadrage eCDF et frontières V0 vérifiés."
+hash_sha256: "git:6eeae4300a9ef695e2534f00164cca80610efd8c"
 created_at: "2026-09-15"
 created_by: KIANGANA-2.0
-verdict: pending
-
+verdict: accepted
+workflow_run_url: "https://github.com/Emeraude-Kiangana/KIANGANA-2.0/actions/runs/34996692423"
