@@ -1,0 +1,11 @@
+evidence_id: EVD-YYYY-NNN
+mission_id: KIA-YYYY-NNN
+claim: ""
+artifact: ""
+method: ""
+result: ""
+hash_sha256: ""
+created_at: ""
+created_by: ""
+verdict: pending
+
