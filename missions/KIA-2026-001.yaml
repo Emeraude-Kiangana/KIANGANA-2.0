@@ -2,7 +2,7 @@ mission_id: KIA-2026-001
 title: "Publier le dépôt de gouvernance KIANGANA 2.0"
 project: KIANGANA-2.0
 owner: Emeraude-Kiangana
-status: running
+status: closed
 permission_level: P3
 objective: "Créer le dépôt GitHub KIANGANA-2.0, publier Gate Zero et obtenir un workflow GitHub Actions vert."
 context: "Gate Zero est validé localement et le dépôt KIANGANA-2.0 est autorisé dans la connexion GitHub."
