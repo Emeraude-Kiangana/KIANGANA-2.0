@@ -1,0 +1,26 @@
+mission_id: KIA-2026-003
+title: "Sélectionner le premier problème congolais traité par eCDF"
+project: eCDF
+owner: Emeraude-Kiangana
+status: running
+permission_level: P3
+objective: "Choisir un problème local documenté, mesurable, prototypable et pertinent pour le Stellar Community Fund."
+selected_problem: "Preuve et traçabilité des paiements agricoles entre acheteurs ou coopératives et petits producteurs en RDC."
+acceptance_criteria:
+  - le problème cite une source institutionnelle
+  - les bénéficiaires, payeurs et vérificateurs sont identifiés
+  - sept indicateurs V0 sont définis
+  - le périmètre et les exclusions sont explicites
+  - Stellar reste un adaptateur Testnet remplaçable
+  - aucune prétention CBDC ou BCC n’est formulée
+evidence_required:
+  - note de sélection du problème
+  - décision ADR-0004
+  - workflow GitHub Actions réussi
+  - pull request fusionnée par validation humaine
+human_approval:
+  required: true
+  approver: Emeraude-Kiangana
+  recorded_signal: "Go — 2026-09-15"
+rollback_plan: "Fermer la pull request ou remplacer ADR-0004 par une nouvelle décision documentée."
+
