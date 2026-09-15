@@ -1,0 +1,46 @@
+mission_id: KIA-2026-001
+title: "Publier le dépôt de gouvernance KIANGANA 2.0"
+project: KIANGANA-2.0
+owner: Emeraude-Kiangana
+status: running
+permission_level: P3
+objective: "Créer le dépôt GitHub KIANGANA-2.0, publier Gate Zero et obtenir un workflow GitHub Actions vert."
+context: "Gate Zero est validé localement et le dépôt KIANGANA-2.0 est autorisé dans la connexion GitHub."
+scope:
+  included:
+    - création initiale du dépôt par le propriétaire
+    - publication des artefacts Gate Zero
+    - exécution du workflow gate-zero.yml
+    - conservation de l’URL du dépôt et du run réussi comme preuves
+  excluded:
+    - déploiement en production
+    - transaction financière ou blockchain
+    - ajout de secrets
+inputs:
+  - KIANGANA 2.0 Gate Zero Starter Pack
+outputs:
+  - dépôt GitHub public ou privé choisi par le propriétaire
+  - branche main protégée à terme
+  - workflow Gate Zero réussi
+tools:
+  - Git
+  - GitHub
+  - GitHub Actions
+risks:
+  - publication accidentelle de données sensibles
+  - permissions GitHub excessives
+acceptance_criteria:
+  - le dépôt existe sous le compte Emeraude-Kiangana
+  - tous les artefacts Gate Zero sont présents sur main
+  - le workflow GitHub Actions se termine avec succès
+  - aucun secret n’est détecté
+evidence_required:
+  - URL du dépôt
+  - SHA du commit initial
+  - URL du workflow réussi
+human_approval:
+  required: true
+  approver: Emeraude-Kiangana
+  recorded_signal: "Go — 2026-09-15"
+rollback_plan: "Rendre le dépôt privé ou supprimer les fichiers publiés après vérification du propriétaire."
+blocker: null
