@@ -1,0 +1,32 @@
+mission_id: KIA-2026-002
+title: "Créer le centre de commandement multi-projets"
+project: KIANGANA-2.0
+owner: Emeraude-Kiangana
+status: running
+permission_level: P3
+objective: "Centraliser l’état, les décisions et les prochaines actions de eCDF, AGRICHAIN DAO et Open Technologies Portfolio."
+scope:
+  included:
+    - registre canonique des projets
+    - tableau de commandement lisible
+    - modèle de rapport périodique
+    - validation automatisée du registre
+  excluded:
+    - modification des dépôts projets
+    - création de tokens ou transactions
+    - publication de données sensibles
+acceptance_criteria:
+  - les trois projets sont enregistrés
+  - chaque projet possède statut, Gate, objectif, contraintes et prochaine décision
+  - le tableau de commandement reflète le registre
+  - tous les tests automatisés réussissent
+evidence_required:
+  - SHA du commit de branche
+  - URL du workflow réussi
+  - URL de la pull request
+human_approval:
+  required: true
+  approver: Emeraude-Kiangana
+  recorded_signal: "GO — 2026-09-15"
+rollback_plan: "Fermer la pull request sans fusionner."
+
