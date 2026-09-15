@@ -1,0 +1,22 @@
+mission_id: KIA-YYYY-NNN
+title: ""
+project: KIANGANA-2.0
+owner: Emeraude-Kiangana
+status: proposed
+permission_level: P1
+objective: ""
+context: ""
+scope:
+  included: []
+  excluded: []
+inputs: []
+outputs: []
+tools: []
+risks: []
+acceptance_criteria: []
+evidence_required: []
+human_approval:
+  required: false
+  approver: Emeraude-Kiangana
+rollback_plan: ""
+
