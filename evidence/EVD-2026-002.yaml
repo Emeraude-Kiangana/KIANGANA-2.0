@@ -3,9 +3,11 @@ mission_id: KIA-2026-002
 claim: "Le centre de commandement représente les trois projets prioritaires et passe les contrôles automatisés."
 artifact: "governance/project-registry.yaml; dashboard/COMMAND-CENTER.md; templates/project-status.yaml"
 method: "Validation locale, tests GitHub Actions et revue humaine de la pull request"
-result: "23 artefacts validés; 4 tests sur 4 réussis; workflow de branche réussi."
-hash_sha256: "git:56ca3c7826ca4bf276b85999ebede91d51a63ca7"
+result: "Centre de commandement fusionné dans main; 23 artefacts validés; 4 tests sur 4 réussis; CI post-fusion réussie."
+hash_sha256: "git:527eb0b0e36db63217bf8bd6bc0d1cdb8d8c0f3e"
 created_at: "2026-09-15"
 created_by: KIANGANA-2.0
 verdict: accepted
 workflow_run_url: "https://github.com/Emeraude-Kiangana/KIANGANA-2.0/actions/runs/34963685450"
+pull_request_url: "https://github.com/Emeraude-Kiangana/KIANGANA-2.0/pull/1"
+post_merge_workflow_url: "https://github.com/Emeraude-Kiangana/KIANGANA-2.0/actions/runs/34967177393"
