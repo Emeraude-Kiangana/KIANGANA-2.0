@@ -1,0 +1,118 @@
+name: KIF V0.2 CP-01
+
+on:
+  push:
+    branches:
+      - kif-v0.2-cp01
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-ci:
+    name: KIF V0.2 unit and hygiene CI
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install KIF
+        working-directory: kif/source
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Unit tests
+        working-directory: kif/source
+        run: pytest tests/unit -q
+
+      - name: Gate Zero protected files unchanged
+        run: |
+          git diff --exit-code ca4dca7b99b71cb2579de53b3bb5a794b9631067 HEAD --             kif/source/src/kif/core/models.py             kif/source/src/kif/providers/base.py             kif/source/src/kif/providers/deepseek.py             .github/workflows/kif-gate-zero.yml
+
+      - name: Secret hygiene
+        run: |
+          if git ls-files | xargs grep -nE '(sk|gsk)_[A-Za-z0-9]{16,}|sk-[A-Za-z0-9]{16,}'; then
+            echo "SECRET_SCAN=FAIL"
+            exit 1
+          fi
+          echo "SECRET_SCAN=CLEAN"
+
+  live-v02:
+    name: KIF V0.2 controlled live validation
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GROQ_MODEL: ${{ vars.GROQ_MODEL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install KIF
+        working-directory: kif/source
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Require live credentials
+        shell: bash
+        run: |
+          test -n "${DEEPSEEK_API_KEY:-}" || { echo "DEEPSEEK_API_KEY=MISSING"; exit 1; }
+          test -n "${GROQ_API_KEY:-}" || { echo "GROQ_API_KEY=MISSING"; exit 1; }
+          echo "LIVE_CREDENTIALS=SET"
+
+      - name: Verify provider models
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEEPSEEK_SELECTED="${DEEPSEEK_MODEL:-deepseek-flash}"
+          GROQ_SELECTED="${GROQ_MODEL:-openai/gpt-oss-20b}"
+
+          curl --fail-with-body --silent --show-error             https://api.deepseek.com/models             -H "Authorization: Bearer ${DEEPSEEK_API_KEY}"             -o /tmp/deepseek-models.json
+          jq -r --arg m "${DEEPSEEK_SELECTED}" '.data[] | select(.id==$m) | .id'             /tmp/deepseek-models.json | grep -q .
+          echo "DEEPSEEK_MODEL_MATCH=OK"
+
+          curl --fail-with-body --silent --show-error             https://api.groq.com/openai/v1/models             -H "Authorization: Bearer ${GROQ_API_KEY}"             -o /tmp/groq-models.json
+          jq -r --arg m "${GROQ_SELECTED}" '.data[] | select(.id==$m) | .id'             /tmp/groq-models.json | grep -q .
+          echo "GROQ_MODEL_MATCH=OK"
+
+      - name: Gate Zero regression unit tests
+        working-directory: kif/source
+        run: pytest tests/unit -q
+
+      - name: Real provider and fallback integrations
+        working-directory: kif/source
+        run: pytest tests/integration -q -s
+
+      - name: Gate Zero protected files unchanged
+        run: |
+          git diff --exit-code ca4dca7b99b71cb2579de53b3bb5a794b9631067 HEAD --             kif/source/src/kif/core/models.py             kif/source/src/kif/providers/base.py             kif/source/src/kif/providers/deepseek.py             .github/workflows/kif-gate-zero.yml
+
+      - name: Secret hygiene
+        run: |
+          if git ls-files | xargs grep -nE '(sk|gsk)_[A-Za-z0-9]{16,}|sk-[A-Za-z0-9]{16,}'; then
+            echo "SECRET_SCAN=FAIL"
+            exit 1
+          fi
+          echo "SECRET_SCAN=CLEAN"

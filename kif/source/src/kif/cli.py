@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import sys
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 from kif.core.models import Privacy, Quality, TaskEnvelope, TaskType, UsageRecord
 from kif.providers.deepseek import DeepSeekAdapter
+from kif.providers.groq import GroqAdapter
+from kif.providers.registry import build_provider_registry
 from kif.router.router import Router
 from kif.usage.store import UsageStore
 
@@ -16,8 +20,9 @@ _DEFAULT_USAGE_PATH = Path("tests/data/usage.jsonl")
 
 async def _run_ask(prompt: str) -> int:
     load_dotenv()
-    adapter = DeepSeekAdapter()
-    router = Router({adapter.name: adapter})
+    primary = DeepSeekAdapter()
+    fallback = GroqAdapter() if os.environ.get("GROQ_API_KEY") else None
+    router = Router(build_provider_registry(primary, fallback))
     store = UsageStore(_DEFAULT_USAGE_PATH)
     task = TaskEnvelope(
         type=TaskType.CHAT,
@@ -49,7 +54,7 @@ async def _run_ask(prompt: str) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="kif", description="KIF Gate Zero CLI")
+    parser = argparse.ArgumentParser(prog="kif", description="KIF V0.2 CLI")
     sub = parser.add_subparsers(dest="command", required=True)
     ask = sub.add_parser("ask", help="Send a prompt through KIF")
     ask.add_argument("prompt", help="Prompt text")
