@@ -1,0 +1,10 @@
+KIF Gate Zero source artifact
+
+Local source commit: 0dea466aaa183bb000b0c3b73564f4ccc4d0405a
+Archive: kif/gate-zero.zip
+SHA-256: 1ac1c4f1948cadfbe01f4e1ef47fefb673befa5059ad1717ac69719765b49170
+
+This archive contains the exact tracked Gate Zero source previously tested locally.
+The GitHub Actions workflow verifies this SHA-256 before unpacking or executing it.
+
+Scope remains Gate Zero only: DeepSeek single-provider path, no Gemini, no AWS, no V0.2.
