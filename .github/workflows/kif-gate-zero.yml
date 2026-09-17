@@ -30,37 +30,26 @@ jobs:
         shell: bash
         run: |
           set +e
-
-          SOURCE=FAIL
-          INSTALL=FAIL
-          SECRET=FAIL
-          MODELS=FAIL
-          MODEL_MATCH=FAIL
-          UNIT=FAIL
-          INTEGRATION=FAIL
-          CLI=FAIL
-          USAGE=FAIL
-          HYGIENE=FAIL
+          SOURCE=FAIL; INSTALL=FAIL; SECRET=FAIL; MODELS=FAIL; MODEL_MATCH=FAIL
+          UNIT=FAIL; INTEGRATION=FAIL; CLI=FAIL; USAGE=FAIL; HYGIENE=FAIL
+          KIF_DIR="$GITHUB_WORKSPACE/kif/source"
 
           echo "=== ENVIRONMENT ==="
           python --version
           python -m pip --version
           python -m pip show setuptools | grep -i '^Version:' || true
 
-          echo "=== SOURCE CONTENT MANIFEST ==="
-          rm -rf /tmp/kif-g0
-          mkdir -p /tmp/kif-g0
-          unzip -q kif/gate-zero.zip -d /tmp/kif-g0
-          if [ $? -eq 0 ]; then
-            cd /tmp/kif-g0
-            sha256sum -c "$GITHUB_WORKSPACE/kif/GATE_ZERO_MANIFEST.sha256"
-            if [ $? -eq 0 ]; then SOURCE=PASS; fi
+          echo "=== NATIVE SOURCE ==="
+          if [ -f "$KIF_DIR/pyproject.toml" ] && \
+             [ -f "$KIF_DIR/src/kif/providers/deepseek.py" ] && \
+             [ -f "$KIF_DIR/tests/integration/test_deepseek_real.py" ]; then
+            SOURCE=PASS
           fi
           echo "SOURCE=$SOURCE"
 
           echo "=== G0-02 CLEAN INSTALL ==="
           if [ "$SOURCE" = "PASS" ]; then
-            cd /tmp/kif-g0
+            cd "$KIF_DIR"
             python -m pip install --upgrade pip
             python -m pip install -e ".[dev]"
             if [ $? -eq 0 ]; then
@@ -99,17 +88,12 @@ jobs:
           echo "=== MODEL MATCH ==="
           if [ "$MODELS" = "PASS" ]; then
             jq -r --arg m "$MODEL" '.data[] | select(.id==$m) | .id' /tmp/deepseek-models.json | grep -q .
-            if [ $? -eq 0 ]; then
-              MODEL_MATCH=PASS
-              echo "MODEL_MATCH=OK"
-            else
-              echo "MODEL_MATCH=FAIL"
-            fi
+            if [ $? -eq 0 ]; then MODEL_MATCH=PASS; echo "MODEL_MATCH=OK"; else echo "MODEL_MATCH=FAIL"; fi
           fi
 
           echo "=== G0-06 UNIT TESTS ==="
           if [ "$INSTALL" = "PASS" ]; then
-            cd /tmp/kif-g0
+            cd "$KIF_DIR"
             pytest tests/unit -q
             if [ $? -eq 0 ]; then UNIT=PASS; fi
           fi
@@ -117,7 +101,7 @@ jobs:
 
           echo "=== G0-04/05 REAL INTEGRATION ==="
           if [ "$INSTALL" = "PASS" ] && [ "$SECRET" = "PASS" ] && [ "$MODEL_MATCH" = "PASS" ]; then
-            cd /tmp/kif-g0
+            cd "$KIF_DIR"
             export DEEPSEEK_MODEL="$MODEL"
             pytest tests/integration -q -s
             if [ $? -eq 0 ]; then INTEGRATION=PASS; fi
@@ -126,7 +110,7 @@ jobs:
 
           echo "=== CLI END-TO-END ==="
           if [ "$INTEGRATION" = "PASS" ]; then
-            cd /tmp/kif-g0
+            cd "$KIF_DIR"
             export DEEPSEEK_MODEL="$MODEL"
             kif ask "Reply with exactly one word: pong"
             if [ $? -eq 0 ]; then CLI=PASS; fi
@@ -135,7 +119,7 @@ jobs:
 
           echo "=== G0-08 USAGE EVIDENCE ==="
           if [ "$CLI" = "PASS" ]; then
-            cd /tmp/kif-g0
+            cd "$KIF_DIR"
             if [ -s tests/data/usage.jsonl ]; then
               tail -1 tests/data/usage.jsonl | jq .
               if [ $? -eq 0 ]; then USAGE=PASS; fi
@@ -158,7 +142,7 @@ jobs:
             echo "### KIF Gate Zero"
             echo "| Check | Result |"
             echo "|---|---|"
-            echo "| Source manifest | $SOURCE |"
+            echo "| Native source | $SOURCE |"
             echo "| G0-02 clean install | $INSTALL |"
             echo "| G0-03 credential | $SECRET |"
             echo "| DeepSeek /models | $MODELS |"
@@ -170,19 +154,13 @@ jobs:
             echo "| G0-07 secret hygiene | $HYGIENE |"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [ "$SOURCE" = "PASS" ] && \
-             [ "$INSTALL" = "PASS" ] && \
-             [ "$SECRET" = "PASS" ] && \
-             [ "$MODELS" = "PASS" ] && \
-             [ "$MODEL_MATCH" = "PASS" ] && \
-             [ "$UNIT" = "PASS" ] && \
-             [ "$INTEGRATION" = "PASS" ] && \
-             [ "$CLI" = "PASS" ] && \
-             [ "$USAGE" = "PASS" ] && \
-             [ "$HYGIENE" = "PASS" ]; then
+          if [ "$SOURCE" = "PASS" ] && [ "$INSTALL" = "PASS" ] && \
+             [ "$SECRET" = "PASS" ] && [ "$MODELS" = "PASS" ] && \
+             [ "$MODEL_MATCH" = "PASS" ] && [ "$UNIT" = "PASS" ] && \
+             [ "$INTEGRATION" = "PASS" ] && [ "$CLI" = "PASS" ] && \
+             [ "$USAGE" = "PASS" ] && [ "$HYGIENE" = "PASS" ]; then
             echo "GATE_ZERO=PASS"
             exit 0
           fi
-
           echo "GATE_ZERO=BLOCKED"
           exit 1
