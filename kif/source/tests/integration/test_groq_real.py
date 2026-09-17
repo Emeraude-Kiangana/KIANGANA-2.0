@@ -27,8 +27,12 @@ async def test_real_groq_roundtrip(tmp_path):
     assert isinstance(resp.model, str) and resp.model
     assert resp.task_id == task.task_id
     assert isinstance(resp.output, str) and resp.output.strip()
-    if resp.usage.total_tokens is not None:
-        assert resp.usage.total_tokens > 0
+    assert resp.usage.input_tokens is not None and resp.usage.input_tokens > 0
+    assert resp.usage.output_tokens is not None and resp.usage.output_tokens > 0
+    assert resp.usage.total_tokens is not None and resp.usage.total_tokens > 0
+    print(f"GROQ_USAGE_INPUT={resp.usage.input_tokens}")
+    print(f"GROQ_USAGE_OUTPUT={resp.usage.output_tokens}")
+    print(f"GROQ_USAGE_TOTAL={resp.usage.total_tokens}")
     assert resp.actual_cost is None
 
     store = UsageStore(tmp_path / "usage.jsonl")
@@ -49,3 +53,4 @@ async def test_real_groq_roundtrip(tmp_path):
     assert len(persisted) == 1
     assert persisted[0].provider == "groq"
     assert persisted[0].task_id == resp.task_id
+    print(f"GROQ_USAGE_RECORD_PROVIDER={persisted[0].provider}")
