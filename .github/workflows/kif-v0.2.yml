@@ -42,7 +42,7 @@ jobs:
 
       - name: Secret hygiene
         run: |
-          if git ls-files | xargs grep -nE '(sk|gsk)_[A-Za-z0-9]{16,}|sk-[A-Za-z0-9]{16,}'; then
+          if git ls-files | xargs grep -nE '(sk|gsk)_[A-Za-z0-9]{16,}|[s]k-[A-Za-z0-9]{16,}'; then
             echo "SECRET_SCAN=FAIL"
             exit 1
           fi
@@ -111,7 +111,7 @@ jobs:
 
       - name: Secret hygiene
         run: |
-          if git ls-files | xargs grep -nE '(sk|gsk)_[A-Za-z0-9]{16,}|sk-[A-Za-z0-9]{16,}'; then
+          if git ls-files | xargs grep -nE '(sk|gsk)_[A-Za-z0-9]{16,}|[s]k-[A-Za-z0-9]{16,}'; then
             echo "SECRET_SCAN=FAIL"
             exit 1
           fi
