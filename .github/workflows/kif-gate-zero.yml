@@ -47,15 +47,14 @@ jobs:
           python -m pip --version
           python -m pip show setuptools | grep -i '^Version:' || true
 
-          echo "=== SOURCE ARTIFACT ==="
-          echo "1ac1c4f1948cadfbe01f4e1ef47fefb673befa5059ad1717ac69719765b49170  kif/gate-zero.zip" | sha256sum -c -
+          echo "=== SOURCE CONTENT MANIFEST ==="
+          rm -rf /tmp/kif-g0
+          mkdir -p /tmp/kif-g0
+          unzip -q kif/gate-zero.zip -d /tmp/kif-g0
           if [ $? -eq 0 ]; then
-            rm -rf /tmp/kif-g0
-            mkdir -p /tmp/kif-g0
-            unzip -q kif/gate-zero.zip -d /tmp/kif-g0
-            if [ -f /tmp/kif-g0/pyproject.toml ] && [ -f /tmp/kif-g0/tests/integration/test_deepseek_real.py ]; then
-              SOURCE=PASS
-            fi
+            cd /tmp/kif-g0
+            sha256sum -c "$GITHUB_WORKSPACE/kif/GATE_ZERO_MANIFEST.sha256"
+            if [ $? -eq 0 ]; then SOURCE=PASS; fi
           fi
           echo "SOURCE=$SOURCE"
 
@@ -159,7 +158,7 @@ jobs:
             echo "### KIF Gate Zero"
             echo "| Check | Result |"
             echo "|---|---|"
-            echo "| Source hash/unpack | $SOURCE |"
+            echo "| Source manifest | $SOURCE |"
             echo "| G0-02 clean install | $INSTALL |"
             echo "| G0-03 credential | $SECRET |"
             echo "| DeepSeek /models | $MODELS |"
