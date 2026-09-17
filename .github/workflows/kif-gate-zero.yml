@@ -5,22 +5,17 @@ on:
   push:
     branches:
       - kif-gate-zero
-    paths:
-      - "kif/gate-zero.zip"
-      - "kif/GATE_ZERO_SOURCE.txt"
-      - ".github/workflows/kif-gate-zero.yml"
 
 permissions:
   contents: read
-
-env:
-  DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-  DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || 'deepseek-flash' }}
 
 jobs:
   gate-zero:
     name: KIF Gate Zero validation
     runs-on: ubuntu-latest
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL }}
 
     steps:
       - name: Checkout
@@ -31,143 +26,164 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Verify source artifact
-        id: source
-        continue-on-error: true
+      - name: Run Gate Zero diagnostics
+        shell: bash
         run: |
-          echo "1ac1c4f1948cadfbe01f4e1ef47fefb673befa5059ad1717ac69719765b49170  kif/gate-zero.zip" | sha256sum -c -
-          rm -rf /tmp/kif-g0
-          mkdir -p /tmp/kif-g0
-          unzip -q kif/gate-zero.zip -d /tmp/kif-g0
-          test -f /tmp/kif-g0/pyproject.toml
-          test -f /tmp/kif-g0/tests/integration/test_deepseek_real.py
+          set +e
 
-      - name: Environment evidence
-        id: environment
-        continue-on-error: true
-        run: |
+          SOURCE=FAIL
+          INSTALL=FAIL
+          SECRET=FAIL
+          MODELS=FAIL
+          MODEL_MATCH=FAIL
+          UNIT=FAIL
+          INTEGRATION=FAIL
+          CLI=FAIL
+          USAGE=FAIL
+          HYGIENE=FAIL
+
+          echo "=== ENVIRONMENT ==="
           python --version
           python -m pip --version
           python -m pip show setuptools | grep -i '^Version:' || true
 
-      - name: Clean install from PyPI
-        id: install
-        continue-on-error: true
-        working-directory: /tmp/kif-g0
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e ".[dev]"
-          python -m pip show setuptools | grep -i '^Version:'
-          python -c "import kif; print('KIF_VERSION=' + kif.__version__)"
-          python -c "from kif.core.models import TaskEnvelope; print('KIF_IMPORT=OK')"
-
-      - name: Verify DeepSeek secret is configured
-        id: secret
-        continue-on-error: true
-        run: |
-          if [ -z "${DEEPSEEK_API_KEY:-}" ]; then
-            echo "::error::Repository secret DEEPSEEK_API_KEY is missing"
-            exit 1
+          echo "=== SOURCE ARTIFACT ==="
+          echo "1ac1c4f1948cadfbe01f4e1ef47fefb673befa5059ad1717ac69719765b49170  kif/gate-zero.zip" | sha256sum -c -
+          if [ $? -eq 0 ]; then
+            rm -rf /tmp/kif-g0
+            mkdir -p /tmp/kif-g0
+            unzip -q kif/gate-zero.zip -d /tmp/kif-g0
+            if [ -f /tmp/kif-g0/pyproject.toml ] && [ -f /tmp/kif-g0/tests/integration/test_deepseek_real.py ]; then
+              SOURCE=PASS
+            fi
           fi
-          echo "DEEPSEEK_API_KEY=SET"
+          echo "SOURCE=$SOURCE"
 
-      - name: Query DeepSeek model registry
-        id: models
-        if: steps.secret.outcome == 'success'
-        continue-on-error: true
-        run: |
-          curl --fail-with-body --silent --show-error \
-            https://api.deepseek.com/models \
-            -H "Authorization: Bearer ${DEEPSEEK_API_KEY}" \
-            -o /tmp/deepseek-models.json
-          echo "MODELS_EXPOSED:"
-          jq -r '.data[].id' /tmp/deepseek-models.json
+          echo "=== G0-02 CLEAN INSTALL ==="
+          if [ "$SOURCE" = "PASS" ]; then
+            cd /tmp/kif-g0
+            python -m pip install --upgrade pip
+            python -m pip install -e ".[dev]"
+            if [ $? -eq 0 ]; then
+              python -m pip show setuptools | grep -i '^Version:' || true
+              python -c "import kif; print('KIF_VERSION=' + kif.__version__)"
+              python -c "from kif.core.models import TaskEnvelope; print('KIF_IMPORT=OK')"
+              if [ $? -eq 0 ]; then INSTALL=PASS; fi
+            fi
+          fi
+          echo "INSTALL=$INSTALL"
 
-      - name: Assert configured model exists
-        id: model_match
-        if: steps.models.outcome == 'success'
-        continue-on-error: true
-        run: |
-          echo "DEEPSEEK_MODEL=${DEEPSEEK_MODEL}"
-          jq -r --arg m "${DEEPSEEK_MODEL}" '.data[] | select(.id==$m) | .id' \
-            /tmp/deepseek-models.json | grep -q .
-          echo "MODEL_MATCH=OK"
+          echo "=== G0-03 SECRET ==="
+          if [ -n "${DEEPSEEK_API_KEY:-}" ]; then
+            SECRET=PASS
+            echo "DEEPSEEK_API_KEY=SET"
+          else
+            echo "DEEPSEEK_API_KEY=MISSING"
+          fi
 
-      - name: Unit tests
-        id: unit
-        if: steps.install.outcome == 'success'
-        continue-on-error: true
-        working-directory: /tmp/kif-g0
-        run: pytest tests/unit -q
+          MODEL="${DEEPSEEK_MODEL:-deepseek-flash}"
+          echo "DEEPSEEK_MODEL=$MODEL"
 
-      - name: Real DeepSeek integration test
-        id: integration
-        if: steps.install.outcome == 'success' && steps.secret.outcome == 'success' && steps.model_match.outcome == 'success'
-        continue-on-error: true
-        working-directory: /tmp/kif-g0
-        run: pytest tests/integration -q -s
+          echo "=== DEEPSEEK /models ==="
+          if [ "$SECRET" = "PASS" ]; then
+            curl --fail-with-body --silent --show-error \
+              https://api.deepseek.com/models \
+              -H "Authorization: Bearer ${DEEPSEEK_API_KEY}" \
+              -o /tmp/deepseek-models.json
+            if [ $? -eq 0 ]; then
+              MODELS=PASS
+              jq -r '.data[].id' /tmp/deepseek-models.json
+            fi
+          fi
+          echo "MODELS=$MODELS"
 
-      - name: CLI end-to-end smoke test
-        id: cli
-        if: steps.integration.outcome == 'success'
-        continue-on-error: true
-        working-directory: /tmp/kif-g0
-        run: kif ask "Reply with exactly one word: pong"
+          echo "=== MODEL MATCH ==="
+          if [ "$MODELS" = "PASS" ]; then
+            jq -r --arg m "$MODEL" '.data[] | select(.id==$m) | .id' /tmp/deepseek-models.json | grep -q .
+            if [ $? -eq 0 ]; then
+              MODEL_MATCH=PASS
+              echo "MODEL_MATCH=OK"
+            else
+              echo "MODEL_MATCH=FAIL"
+            fi
+          fi
 
-      - name: Usage evidence
-        id: usage
-        if: steps.cli.outcome == 'success'
-        continue-on-error: true
-        working-directory: /tmp/kif-g0
-        run: |
-          test -s tests/data/usage.jsonl
-          tail -1 tests/data/usage.jsonl | jq .
+          echo "=== G0-06 UNIT TESTS ==="
+          if [ "$INSTALL" = "PASS" ]; then
+            cd /tmp/kif-g0
+            pytest tests/unit -q
+            if [ $? -eq 0 ]; then UNIT=PASS; fi
+          fi
+          echo "UNIT=$UNIT"
 
-      - name: Secret hygiene
-        id: hygiene
-        continue-on-error: true
-        run: |
+          echo "=== G0-04/05 REAL INTEGRATION ==="
+          if [ "$INSTALL" = "PASS" ] && [ "$SECRET" = "PASS" ] && [ "$MODEL_MATCH" = "PASS" ]; then
+            cd /tmp/kif-g0
+            export DEEPSEEK_MODEL="$MODEL"
+            pytest tests/integration -q -s
+            if [ $? -eq 0 ]; then INTEGRATION=PASS; fi
+          fi
+          echo "INTEGRATION=$INTEGRATION"
+
+          echo "=== CLI END-TO-END ==="
+          if [ "$INTEGRATION" = "PASS" ]; then
+            cd /tmp/kif-g0
+            export DEEPSEEK_MODEL="$MODEL"
+            kif ask "Reply with exactly one word: pong"
+            if [ $? -eq 0 ]; then CLI=PASS; fi
+          fi
+          echo "CLI=$CLI"
+
+          echo "=== G0-08 USAGE EVIDENCE ==="
+          if [ "$CLI" = "PASS" ]; then
+            cd /tmp/kif-g0
+            if [ -s tests/data/usage.jsonl ]; then
+              tail -1 tests/data/usage.jsonl | jq .
+              if [ $? -eq 0 ]; then USAGE=PASS; fi
+            fi
+          fi
+          echo "USAGE=$USAGE"
+
+          echo "=== G0-07 SECRET HYGIENE ==="
+          cd "$GITHUB_WORKSPACE"
           if git ls-files | xargs grep -nE 'sk-[A-Za-z0-9]{16,}'; then
-            echo "::error::Secret-like token detected in tracked files"
-            exit 1
+            echo "SECRET_SCAN=FAIL"
+          else
+            HYGIENE=PASS
+            echo "SECRET_SCAN=CLEAN"
           fi
-          echo "SECRET_SCAN=CLEAN"
           git status --short
           git rev-parse HEAD
 
-      - name: Gate Zero summary and verdict
-        if: always()
-        run: |
-          echo "### KIF Gate Zero" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Check | Outcome |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Source hash/unpack | ${{ steps.source.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| G0-02 Clean install | ${{ steps.install.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| G0-03 Credential | ${{ steps.secret.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| DeepSeek /models | ${{ steps.models.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| MODEL_MATCH | ${{ steps.model_match.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| G0-06 Unit tests | ${{ steps.unit.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| G0-04/05 Integration | ${{ steps.integration.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| CLI smoke | ${{ steps.cli.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| G0-08 Usage evidence | ${{ steps.usage.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| G0-07 Secret hygiene | ${{ steps.hygiene.outcome }} |" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "### KIF Gate Zero"
+            echo "| Check | Result |"
+            echo "|---|---|"
+            echo "| Source hash/unpack | $SOURCE |"
+            echo "| G0-02 clean install | $INSTALL |"
+            echo "| G0-03 credential | $SECRET |"
+            echo "| DeepSeek /models | $MODELS |"
+            echo "| MODEL_MATCH | $MODEL_MATCH |"
+            echo "| G0-06 unit tests | $UNIT |"
+            echo "| G0-04/05 integration | $INTEGRATION |"
+            echo "| CLI smoke | $CLI |"
+            echo "| G0-08 usage evidence | $USAGE |"
+            echo "| G0-07 secret hygiene | $HYGIENE |"
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          required=(
-            "${{ steps.source.outcome }}"
-            "${{ steps.install.outcome }}"
-            "${{ steps.secret.outcome }}"
-            "${{ steps.models.outcome }}"
-            "${{ steps.model_match.outcome }}"
-            "${{ steps.unit.outcome }}"
-            "${{ steps.integration.outcome }}"
-            "${{ steps.cli.outcome }}"
-            "${{ steps.usage.outcome }}"
-            "${{ steps.hygiene.outcome }}"
-          )
-          for outcome in "${required[@]}"; do
-            if [ "$outcome" != "success" ]; then
-              echo "GATE_ZERO=BLOCKED"
-              exit 1
-            fi
-          done
-          echo "GATE_ZERO=PASS"
+          if [ "$SOURCE" = "PASS" ] && \
+             [ "$INSTALL" = "PASS" ] && \
+             [ "$SECRET" = "PASS" ] && \
+             [ "$MODELS" = "PASS" ] && \
+             [ "$MODEL_MATCH" = "PASS" ] && \
+             [ "$UNIT" = "PASS" ] && \
+             [ "$INTEGRATION" = "PASS" ] && \
+             [ "$CLI" = "PASS" ] && \
+             [ "$USAGE" = "PASS" ] && \
+             [ "$HYGIENE" = "PASS" ]; then
+            echo "GATE_ZERO=PASS"
+            exit 0
+          fi
+
+          echo "GATE_ZERO=BLOCKED"
+          exit 1
